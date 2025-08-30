@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { similaritySearch, generateResponse } from '@/lib/langchain';
+import { logRequest, logError } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
+  logRequest(request, 'chat');
   try {
     const { message } = await request.json();
     
@@ -13,7 +15,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({ response });
   } catch (error) {
-    console.error('Error:', error);
+    logError(error, 'chat');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

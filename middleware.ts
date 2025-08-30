@@ -5,6 +5,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  
+  // Log incoming requests
+  console.log(`${new Date().toISOString()} ${request.method} ${pathname} - ${request.headers.get('user-agent')?.substring(0, 50) || 'No User-Agent'}`);
 
   // Public routes that don't require authentication
   const publicRoutes = ['/'];
@@ -48,9 +51,9 @@ export function middleware(request: NextRequest) {
 
   // All other routes require authentication
   if (!userPayload) {
-    // Redirect to login for protected pages
+    // Redirect to home page for protected pages
     if (!pathname.startsWith('/api/')) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL('/', request.url));
     }
     
     // Return 401 for protected API routes

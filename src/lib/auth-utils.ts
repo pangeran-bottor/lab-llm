@@ -34,7 +34,7 @@ export function getTokenFromRequest(request: NextRequest): string | null {
   return null;
 }
 
-export function authenticateRequest(request: NextRequest): JWTPayload | null {
+export async function authenticateRequest(request: NextRequest): Promise<JWTPayload | null> {
   const token = getTokenFromRequest(request);
   if (!token) return null;
 
@@ -42,14 +42,14 @@ export function authenticateRequest(request: NextRequest): JWTPayload | null {
   if (!payload) return null;
 
   // Verify user still exists
-  const user = userStorage.findById(payload.userId);
+  const user = await userStorage.findById(payload.userId);
   if (!user) return null;
 
   return payload;
 }
 
-export function requireAuth(request: NextRequest): { success: true; user: JWTPayload } | { success: false; error: string } {
-  const userPayload = authenticateRequest(request);
+export async function requireAuth(request: NextRequest): Promise<{ success: true; user: JWTPayload } | { success: false; error: string }> {
+  const userPayload = await authenticateRequest(request);
   
   if (!userPayload) {
     return { success: false, error: 'Authentication required' };
@@ -58,8 +58,8 @@ export function requireAuth(request: NextRequest): { success: true; user: JWTPay
   return { success: true, user: userPayload };
 }
 
-export function requireAdminAuth(request: NextRequest): { success: true; user: JWTPayload } | { success: false; error: string } {
-  const authResult = requireAuth(request);
+export async function requireAdminAuth(request: NextRequest): Promise<{ success: true; user: JWTPayload } | { success: false; error: string }> {
+  const authResult = await requireAuth(request);
   
   if (!authResult.success) {
     return authResult;

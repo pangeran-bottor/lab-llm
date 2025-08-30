@@ -6,7 +6,11 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:migrate-runtime": "tsx src/lib/migrate.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -17,25 +21,31 @@
     "@types/jsonwebtoken": "^9.0.10",
     "basic-auth": "^2.0.1",
     "bcryptjs": "^3.0.2",
+    "drizzle-orm": "^0.36.3",
     "jsonwebtoken": "^9.0.2",
     "langchain": "^0.3.30",
     "next": "15.4.6",
     "openai": "^5.12.2",
     "pdf-parse": "^1.1.1",
+    "pg": "^8.13.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-dropzone": "^14.3.8"
+    "react-dropzone": "^14.3.8",
+    "tsx": "^4.19.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/basic-auth": "^1.1.8",
     "@types/node": "^20",
+    "@types/pg": "^8.11.10",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.30.0",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
     "tailwindcss": "^4",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }

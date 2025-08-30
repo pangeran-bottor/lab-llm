@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { userStorage } from '@/lib/users';
+import { logRequest, logError } from '@/lib/logger';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function POST(request: NextRequest) {
+  logRequest(request, 'auth/login');
   try {
     const { email, password } = await request.json();
 
@@ -17,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Find user
-    const user = userStorage.findByEmail(email);
+    const user = await userStorage.findByEmail(email);
 
     if (!user) {
       return NextResponse.json(

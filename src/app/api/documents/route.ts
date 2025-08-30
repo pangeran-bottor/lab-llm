@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import client, { COLLECTION_NAME } from '@/lib/qdrant';
 import { requireAuth } from '@/lib/auth-utils';
+import { logRequest, logError } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
+  logRequest(request, 'documents');
   // JWT authentication check
-  const authResult = requireAuth(request);
+  const authResult = await requireAuth(request);
   
   if (!authResult.success) {
     return NextResponse.json(

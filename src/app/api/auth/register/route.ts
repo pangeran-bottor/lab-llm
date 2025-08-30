@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { userStorage } from '@/lib/users';
+import { logRequest, logError } from '@/lib/logger';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function POST(request: NextRequest) {
+  logRequest(request, 'auth/register');
   try {
     const { name, email, password, company, role = 'user' } = await request.json();
 
@@ -17,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already exists
-    const existingUser = userStorage.findByEmail(email);
+    const existingUser = await userStorage.findByEmail(email);
     if (existingUser) {
       return NextResponse.json(
         { error: 'User with this email already exists' },
@@ -29,7 +31,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
-    const newUser = userStorage.create({
+    const newUser = await userStorage.create({
       email,
       password: hashedPassword,
       name,

@@ -1,120 +1,207 @@
-# 🤖 AI-Powered Customer Support Portal
+# Lab-LLM: AI Customer Support Portal
 
-A comprehensive SaaS application that provides intelligent customer support through AI-powered document chat. Upload your knowledge base and let AI provide instant, accurate answers to customer queries based on your documentation.
+A modern AI-powered customer support application built with Next.js, PostgreSQL, and Docker.
 
-## ✨ Features
+## 🚀 Features
 
-### 🔐 **Authentication & User Management**
-- **Secure Login/Registration** - JWT-based authentication with bcrypt password hashing
-- **Role-Based Access** - Admin and user roles with appropriate permissions
-- **Route Protection** - Middleware-based route protection for authenticated areas
-- **User Profiles** - Complete user management with company and role information
+- **AI-Powered Chat**: Intelligent customer support using OpenAI and document-based responses
+- **User Authentication**: Secure JWT-based authentication with role management
+- **Document Management**: Upload and manage knowledge base documents (PDF support)
+- **Vector Search**: Fast document retrieval using Qdrant vector database
+- **Database Integration**: PostgreSQL for persistent user and application data
+- **Dockerized Deployment**: Complete containerized setup with Docker Compose
 
-### 🤖 **AI-Powered Support**
-- **Document Chat** - Ask questions and get answers based on uploaded documents
-- **Vector Search** - Advanced similarity search using Qdrant vector database
-- **Context-Aware Responses** - AI understands document context for accurate answers
-- **LangChain Integration** - Powered by OpenAI GPT-4 and embeddings
+## 🛠️ Tech Stack
 
-### 📄 **Document Management**
-- **PDF Upload** - Upload and process PDF documents into the knowledge base
-- **Document Processing** - Automatic text extraction and chunking
-- **Document Library** - View and manage uploaded documents
-- **Vector Storage** - Documents stored as embeddings for fast retrieval
+- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Node.js
+- **Database**: PostgreSQL with Drizzle ORM
+- **Vector DB**: Qdrant for document embeddings
+- **AI**: OpenAI GPT models, LangChain
+- **Authentication**: JWT tokens, bcrypt password hashing
+- **Deployment**: Docker, Docker Compose
 
-### 🎨 **Professional UI/UX**
-- **Responsive Design** - Works seamlessly on desktop and mobile
-- **Modern Interface** - Built with TailwindCSS for a professional look
-- **Comprehensive Navigation** - Sidebar navigation for easy access to all features
-- **Loading States** - Professional loading indicators and error handling
+## 📋 Prerequisites
+
+- Docker and Docker Compose
+- Node.js 18+ (for local development)
+- OpenAI API key
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Node.js 18+ 
-- Docker (for Qdrant vector database)
-- OpenAI API key
+### Option 1: Using Makefile (Recommended)
 
-### 1. Clone and Install
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd lab-llm
+   ```
+
+2. **Complete setup with one command**:
+   ```bash
+   make setup
+   ```
+
+3. **Configure environment variables** when prompted:
+   - Add your `OPENAI_API_KEY`
+   - Set a secure `JWT_SECRET`
+
+### Option 2: Automated Setup Script
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd lab-llm
+   ```
+
+2. **Run the setup script**:
+   ```bash
+   ./scripts/setup.sh
+   ```
+
+3. **Configure environment variables** when prompted:
+   - Add your `OPENAI_API_KEY`
+   - Set a secure `JWT_SECRET`
+
+### Option 3: Manual Setup
+
+1. **Clone and install dependencies**:
+   ```bash
+   git clone <repository-url>
+   cd lab-llm
+   npm install
+   ```
+
+2. **Configure environment**:
+   ```bash
+   cp env.example .env
+   # Edit .env with your configuration
+   ```
+
+3. **Generate database schema**:
+   ```bash
+   npm run db:generate
+   ```
+
+4. **Start services**:
+   ```bash
+   docker-compose up -d
+   ```
+
+5. **Run migrations**:
+   ```bash
+   docker-compose run --rm migrate
+   ```
+
+## 🌐 Access Points
+
+After setup, the application will be available at:
+
+- **Application**: http://localhost:3000
+- **PostgreSQL**: localhost:5432
+- **Qdrant**: http://localhost:6333
+
+## 📁 Project Structure
+
+```
+lab-llm/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── api/               # API routes
+│   │   ├── chat/              # Chat interface
+│   │   ├── admin/             # Admin panel
+│   │   └── auth/              # Authentication pages
+│   ├── components/            # React components
+│   ├── lib/                   # Utility libraries
+│   │   ├── db.ts             # Database configuration
+│   │   ├── schema.ts         # Database schema
+│   │   ├── user-db.ts        # User database operations
+│   │   └── auth.tsx          # Authentication context
+│   └── types/                 # TypeScript type definitions
+├── drizzle/                   # Database migrations
+├── scripts/                   # Setup and utility scripts
+├── docker-compose.yml         # Docker services configuration
+├── Dockerfile                 # Application container
+└── drizzle.config.ts          # Database configuration
+```
+
+## 🔧 Development
+
+### Quick Development Commands (Makefile)
+
 ```bash
-git clone <repository-url>
-cd lab-llm
-npm install
+# Complete setup (first time)
+make setup
+
+# Start development environment
+make dev                    # Local dev server + database services
+make dev-full              # Full development environment
+
+# Docker operations
+make start                 # Start all services
+make stop                  # Stop all services
+make restart               # Restart all services
+make status                # Show service status
+
+# After code changes
+make update                # Full update (rebuild + restart)
+make quick-update          # Quick app-only update
+
+# Database operations
+make db-generate           # Generate migrations
+make db-migrate-docker     # Run migrations in Docker
+make db-studio            # Open database studio
+make db-reset             # Reset database (⚠️ deletes data)
+
+# Utility commands
+make logs                  # Show all logs
+make logs-app             # App logs only
+make health               # Health check
+make urls                 # Show service URLs
+make help                 # Show all available commands
 ```
 
-### 2. Environment Setup
-Create a `.env.local` file:
-```bash
-# OpenAI API Key
-OPENAI_API_KEY=your_openai_api_key_here
+### Manual Development (Alternative)
 
-# JWT Secret for authentication
-JWT_SECRET=your_super_secret_jwt_key_here
+1. **Start the database**:
+   ```bash
+   docker-compose up postgres qdrant -d
+   ```
 
-# Qdrant Configuration
-QDRANT_URL=http://localhost:6333
-```
+2. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
 
-### 3. Start Qdrant Database
-```bash
-docker run -d --name qdrant -p 6333:6333 qdrant/qdrant
-```
+3. **Access the application**: http://localhost:3000
 
-### 4. Run the Application
-```bash
-npm run dev
-```
+### Database Operations
 
-Visit [http://localhost:3000](http://localhost:3000) to see the application.
+- **Generate migrations**: `npm run db:generate`
+- **Run migrations**: `npm run db:migrate`
+- **Open database studio**: `npm run db:studio`
 
-##  Project Structure
+### Docker Commands
 
-```
-src/
-├── app/                    # Next.js App Router
-│   ├── api/               # API routes
-│   │   ├── auth/          # Authentication endpoints
-│   │   ├── chat/          # Chat API
-│   │   ├── documents/     # Document management
-│   │   └── upload/        # File upload
-│   ├── login/             # Login page
-│   ├── register/          # Registration page
-│   ├── chat/              # Chat interface
-│   ├── admin/             # Admin dashboard
-│   └── docs/              # Document management
-├── components/            # React components
-│   ├── AppLayout.tsx      # Main layout with sidebar
-│   ├── Chat.tsx           # Chat interface
-│   ├── Upload.tsx         # File upload component
-│   └── DocumentsList.tsx  # Document management
-├── lib/                   # Utilities and configurations
-│   ├── auth.tsx           # Authentication context
-│   ├── langchain.ts       # LangChain setup
-│   └── qdrant.ts          # Vector database config
-└── types/                 # TypeScript type definitions
-```
+- **Start all services**: `docker-compose up -d`
+- **View logs**: `docker-compose logs -f`
+- **Stop services**: `docker-compose down`
+- **Rebuild application**: `docker-compose build app`
 
-## 🛠 Technology Stack
+## 🔐 Environment Variables
 
-- **Frontend**: Next.js 15.4.6, TypeScript, TailwindCSS
-- **Authentication**: JWT, bcryptjs, middleware-based protection
-- **AI/ML**: LangChain, OpenAI GPT-4, text-embedding-3-small
-- **Database**: Qdrant vector database
-- **File Processing**: PDF parsing and text chunking
-- **UI Components**: React with custom components
-- **Styling**: TailwindCSS for responsive design
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:password@localhost:5432/lab_llm` |
+| `JWT_SECRET` | Secret for JWT token signing | `your-secret-key-change-this-in-production` |
+| `OPENAI_API_KEY` | OpenAI API key for AI features | Required |
+| `QDRANT_URL` | Qdrant vector database URL | `http://localhost:6333` |
+| `NODE_ENV` | Environment mode | `development` |
 
-## 📖 Usage Guide
+## 👥 User Roles
 
-### For End Users
-1. **Register/Login** - Create an account or use demo credentials
-2. **Ask Questions** - Use the chat interface to ask questions
-3. **Get AI Answers** - Receive instant responses based on the knowledge base
-
-### For Administrators
-1. **Upload Documents** - Add PDF files to the knowledge base
-2. **Manage Documents** - View and organize uploaded documents
-3. **Monitor Usage** - Track system usage and performance
+- **User**: Basic access to chat interface
+- **Admin**: Full access including document management and admin panel
 
 ## 🔧 API Endpoints
 
@@ -122,73 +209,72 @@ src/
 - `POST /api/auth/login` - User login
 - `POST /api/auth/register` - User registration
 
-### Chat & Documents
-- `POST /api/chat` - Send chat messages and get AI responses
-- `GET /api/documents` - List uploaded documents
-- `POST /api/upload` - Upload new documents
+### Chat
+- `POST /api/chat` - Send chat message
 
-## 🐳 Docker Deployment
+### Documents
+- `POST /api/upload` - Upload documents
+- `GET /api/documents` - List documents
 
-### Qdrant Setup
-```bash
-# Start Qdrant
-docker run -d --name qdrant -p 6333:6333 qdrant/qdrant
+### Database
+- `GET /api/init-db` - Database health check
+- `POST /api/init-db` - Initialize database
 
-# Verify Qdrant is running
-curl http://localhost:6333/collections
-```
+## 🚨 Production Deployment
 
-### Application Deployment
-```bash
-# Build the application
-npm run build
+1. **Update environment variables** for production
+2. **Use secure JWT secret**: Generate a strong random string
+3. **Configure database**: Use a managed PostgreSQL service
+4. **SSL/TLS**: Enable HTTPS in production
+5. **Resource limits**: Configure Docker resource constraints
 
-# Start the production server
-npm start
-```
-
-## 🔒 Security Features
-
-- **JWT Authentication** - Secure token-based authentication
-- **Password Hashing** - bcrypt for secure password storage
-- **Route Protection** - Middleware protects authenticated routes
-- **Environment Variables** - Secure configuration management
-- **CORS Protection** - Built-in security headers
-
-## 🧪 Development
-
-### Running Tests
-```bash
-npm test
-```
-
-### Code Formatting
-```bash
-npm run lint
-npm run format
-```
-
-### Type Checking
-```bash
-npm run type-check
-```
-
-## 📝 Contributing
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Run tests and linting
+5. Submit a pull request
 
-## 📄 License
+## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
-## 🤝 Support
+## 🆘 Troubleshooting
 
-For support, email support@example.com or create an issue in the repository.
+### Common Issues
 
----
+1. **Database connection failed**:
+   - Check if PostgreSQL is running: `docker-compose ps`
+   - Verify DATABASE_URL in .env file
 
-**Built with ❤️ using Next.js, LangChain, and OpenAI**
+2. **OpenAI API errors**:
+   - Ensure OPENAI_API_KEY is set correctly
+   - Check API quota and billing
+
+3. **Docker issues**:
+   - Restart Docker daemon
+   - Run `docker-compose down && docker-compose up -d`
+
+4. **Port conflicts**:
+   - Check if ports 3000, 5432, or 6333 are in use
+   - Update docker-compose.yml port mappings if needed
+
+### Logs
+
+View application logs:
+```bash
+docker-compose logs -f app
+```
+
+View database logs:
+```bash
+docker-compose logs -f postgres
+```
+
+## 📚 Additional Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Drizzle ORM Documentation](https://orm.drizzle.team/)
+- [Qdrant Documentation](https://qdrant.tech/documentation/)
+- [OpenAI API Documentation](https://platform.openai.com/docs)

@@ -15,7 +15,7 @@ export default function ProtectedRoute({
   children, 
   requireAuth = true, 
   requireAdmin = false,
-  redirectTo = '/login' 
+  redirectTo = '/' 
 }: ProtectedRouteProps) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
